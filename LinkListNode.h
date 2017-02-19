@@ -6,6 +6,7 @@ class	 LinkListNode{
 public:
 	T d;
 	LinkListNode*	n=nullptr;
+	LinkListNode* h = nullptr;
 };
 
 

@@ -1,23 +1,19 @@
-#ifndef	_ForwardLinkList_h_
-#define	_ForwardLinkList_h_
+#ifndef	_DoubLinkList_h_
+#define	_DoubLinkList_h_
 
 #include "LinkList.h"
 
 template<class T>
-class ForwardLinkList:public LinkList<T>{
+class DoubLinkList:public LinkList<T>{
 public:
 	typedef typename LinkList<T>::Index_type Index_type;
-	
-	LinkListNode<T>*	insert(Index_type id, T& data);
-	LinkListNode<T>*	remove(Index_type id, T& data);
 
+	LinkListNode<T>*	insert(Index_type id, T& data) ;
+	LinkListNode<T>*	remove(Index_type id, T& data);
 };
 
-
-
-//add the data before id 
-template<class T>
-LinkListNode<T>* ForwardLinkList<T>::insert(Index_type id, T& data){
+template<typename T>
+LinkListNode<T>*	DoubLinkList<T>::insert(Index_type id, T& data){
 	if (empty()){
 		LinkListNode<T>* n = new LinkListNode < T > ;
 		n->d = data;
@@ -25,27 +21,35 @@ LinkListNode<T>* ForwardLinkList<T>::insert(Index_type id, T& data){
 		++len;
 		return head;
 	}
-	if (id<1 || id > len + 1) return nullptr;
+
+	if (id <1 || id>len + 1) return nullptr;
 	LinkListNode<T>* p = locate(id - 1);
 	LinkListNode<T>* n = new LinkListNode < T > ;
 	++len;
 	n->d = data;
-	if (p){//insert others 	
-		n->n = p->n;
-		p->n = n;
+	if (p){//insert others 
+		if (id == id + 1){
+			n->n = p->n;
+			n->n->h = n;
+			p->n = n;
+			n->h = p;
+		}else{
+			p->n = n;
+			n->h = p;
+		}		
 	}
 	else {	//insert at the head
 		n->n = head;
+		n->h = nullptr;
+		head->h = n;
 		head = n;
 	}
 
 	return(p);
 }
 
-
-//remove the data of index id
 template<class T>
-LinkListNode<T>* ForwardLinkList<T>::remove(Index_type id, T& data){
+LinkListNode<T>* DoubLinkList<T>::remove(Index_type id, T& data){
 	if (empty() || id<1 || id>len) return nullptr;
 
 	LinkListNode<T>* p = locate(id - 1);
@@ -63,6 +67,7 @@ LinkListNode<T>* ForwardLinkList<T>::remove(Index_type id, T& data){
 	}
 	return(p);
 }
+
 
 
 #endif
