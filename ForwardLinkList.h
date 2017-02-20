@@ -3,66 +3,38 @@
 
 #include "LinkList.h"
 
-template<class T>
-class ForwardLinkList:public LinkList<T>{
+template<class DT>
+class ForwardLinkList:public LinkList<DT>{
 public:
-	typedef typename LinkList<T>::Index_type Index_type;
-	
-	LinkListNode<T>*	insert(Index_type id, T& data);
-	LinkListNode<T>*	remove(Index_type id, T& data);
+	typedef typename LinkList<DT>::uint uint;
 
 };
 
-
-
-//add the data before id 
-template<class T>
-LinkListNode<T>* ForwardLinkList<T>::insert(Index_type id, T& data){
-	if (empty()){
-		LinkListNode<T>* n = new LinkListNode < T > ;
-		n->d = data;
-		head = n;
-		++len;
-		return head;
-	}
-	if (id<1 || id > len + 1) return nullptr;
-	LinkListNode<T>* p = locate(id - 1);
-	LinkListNode<T>* n = new LinkListNode < T > ;
-	++len;
-	n->d = data;
-	if (p){//insert others 	
-		n->n = p->n;
-		p->n = n;
-	}
-	else {	//insert at the head
-		n->n = head;
-		head = n;
-	}
-
-	return(p);
-}
-
-
-//remove the data of index id
-template<class T>
-LinkListNode<T>* ForwardLinkList<T>::remove(Index_type id, T& data){
-	if (empty() || id<1 || id>len) return nullptr;
-
-	LinkListNode<T>* p = locate(id - 1);
-	LinkListNode<T>* n = p->n;
-	data = n->d;
-	--len;
+//insert
+template<class DT>
+LinkListNode<DT>* ForwarLinkList<DT>::insert(uint id, DT& d){
+	if (id<1 || id>len + 1 || (id!=1&& empty()) ) return nullptr;
 	if (id == 1){
-		head = p->n;
-		delete p;
+		LinkListNode<DT>* new_node = new LinkListNode < DT > ;
+		new_node->data = d;
+		++len;
+		head = new_node;
 		return head;
 	}
-	else	{
-		p->n = n->n;
-		delete n;
-	}
-	return(p);
+	return insert_one(id, d);
 }
 
+template<class DT>
+LinkListNode<DT>* ForwarLinkList<DT>::remove(uint id, DT& d){
+	if (id<1 || id>len + 1 || empty()) return nullptr;
+	if (id == 1){
+		LinkListNode<DT>* new_node = head->next;
+		--len;
+		delete head;
+		head = new_node;
+		return head;
+	}
 
+	return remove_one(id, d);
+}
 #endif

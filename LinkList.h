@@ -1,57 +1,100 @@
 #ifndef	_LinkList_h_
 #define	_LinkList_h_
 
-#include "LinkListNode.h"
+#include "List.h"
 
-template<typename T>
-class LinkList{
+template<class DT>
+class LinkList :public List < T > {
 public:
-	typedef unsigned int Index_type;
+	typedef	unsigned int	uint;
 
-	LinkList()=default;
+	uint	length()const{ return len; }
+
+	LinkListNode<DT>* locate(uint id);
+	LinkListNode<DT>* setData(uint id, DT& d);
+	LinkListNode<DT>* insert_one(uint id, DT& d);
+	LinkListNode<DT>* remove_one(uint id, DT& d);
+
+	virtual bool push(DT& d)const;
+	virtual bool pop(DT& d)const;
+	virtual LinkListNode<DT>* insert(uint id, DT& d) = 0;
+	virtual LinkListNode<DT>* remove(uint id, DT& d) = 0;
 	
-	unsigned	int	length()const{return len;}
-	bool			empty()const{return len==0?true:false;}	
-
-	LinkListNode<T>* setIdData(Index_type id, T& data);
-	LinkListNode<T>* getHead(){return head;}
-	LinkListNode<T>*	locate(Index_type id);
-
-	virtual LinkListNode<T>*	insert(Index_type id, T& data) = 0;
-	virtual LinkListNode<T>*	remove(Index_type id, T& data) = 0;
-
-	
-protected:
-	unsigned int	len;
-	LinkListNode<T>	*head=nullptr;
+private:
+	uint	len=0;
 };
 
+//locate
+template<typename DT>
+LinkListNode<DT>* LinkList<DT>::locate(uint id){
+	LinkListNode<DT>* cur = head;
+	uint i = id;
+	while (--i)
+		cur = cur->next;
+	return cur;
+}
 
-
-//set the data of index id
-template<class T>
-LinkListNode<T>* LinkList<T>::setIdData(Index_type id, T& data ){
-	if (id<1 || id>len) return nullptr;
-	if (empty()){
-		LinkListNode<T>* n = new LinkListNode < T > ;
-		n->d = data;
-		head = n;
-		return head;
+//setData
+template<typename DT>
+LinkListNode<DT>* LinkList<DT>::setData(uint id, DT& d){
+	if (empty() && id==1){
+		LinkListNode<DT>* new_node = new LinkListNode < DT > ;
+		new_node->data = d;
+		head = new_node;
 		++len;
+		return head;
 	}
-
-	LinkListNode<T>* p = locate(id);
-	if(p)	p->d = data;
-	return(p);
+	LinkListNode* cur = locate(id);
+	cur->data = d;
+	return cur;
 }
 
-template<class T>
-LinkListNode<T>* LinkList<T>::locate(Index_type id){
-	LinkListNode<T>	*p = head;
-	int i = id;
-	while (--i > 0)
-		p = p->n;
-	return p;
+//push
+template<class DT>
+bool LinkList<DT>::push(DT& d)const{
+	if (empty()){
+		LinkListNode<DT>* new_node = new LinkListNode < DT > ;
+		new_node->data = d;
+		head = new_node;
+		++len;
+		return true;
+	}
+	insert_one(len+1, d);
+	return true;
 }
 
-#endif
+//push
+template<class DT>
+bool LinkList<DT>::pop(DT& d)const{
+	if (empty())return false;
+	remove_one(len, d);
+	return TRUE;
+}
+
+//insert_one
+template<typename DT>
+LinkListNode<DT>* LinkList<DT>::insert_one(uint id, DT& d){
+	LinkListNode<DT>* cur = locate(id - 1);
+	LinkListNode<DT>* new_node = new LinkListNode < DT > ;
+	new_node->data = d;
+	++len;
+	new_node->next = cur->next;
+	cur->next = new_node;
+	return new_node;
+}
+
+//remove_one
+template<typename DT>
+LinkListNode<DT>* LinkList<DT>::remove_one(uint id, DT& d){
+	LinkListNode<DT>* cur = locate(id - 1);
+	LinkListNode<DT>* new_node = cur->next;
+	d = new_node->data;
+	--len;
+	cur->next = new_node->next;
+	delete new_node;
+	return cur;
+}
+
+
+
+#endif 

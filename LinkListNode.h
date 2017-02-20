@@ -1,14 +1,12 @@
 #ifndef	_LinkListNode_h_
 #define	_LinkListNode_h_
 
-template<class T>
-class	 LinkListNode{
+template<typename DT>
+class LinkListNode{
 public:
-	T d;
-	LinkListNode*	n=nullptr;
-	LinkListNode* h = nullptr;
+	DT	data;
+	LinkListNode* next=nullptr;
 };
-
 
 
 #endif
