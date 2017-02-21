@@ -4,23 +4,23 @@
 #include "List.h"
 
 template<class DT>
-class LinkList :public List < T > {
+class LinkList :public List < DT > {
 public:
 	typedef	unsigned int	uint;
 
 	uint	length()const{ return len; }
 
 	LinkListNode<DT>* locate(uint id);
-	LinkListNode<DT>* setData(uint id, DT& d);
-	LinkListNode<DT>* insert_one(uint id, DT& d);
+	LinkListNode<DT>* setData(uint id, const DT& d);
+	LinkListNode<DT>* insert_one(uint id, const DT& d);
 	LinkListNode<DT>* remove_one(uint id, DT& d);
 
-	virtual bool push(DT& d)const;
-	virtual bool pop(DT& d)const;
-	virtual LinkListNode<DT>* insert(uint id, DT& d) = 0;
+	virtual bool push(const DT& d);
+	virtual bool pop(DT& d);
+	virtual LinkListNode<DT>* insert(uint id, const DT& d) = 0;
 	virtual LinkListNode<DT>* remove(uint id, DT& d) = 0;
 	
-private:
+protected:
 	uint	len=0;
 };
 
@@ -36,7 +36,7 @@ LinkListNode<DT>* LinkList<DT>::locate(uint id){
 
 //setData
 template<typename DT>
-LinkListNode<DT>* LinkList<DT>::setData(uint id, DT& d){
+LinkListNode<DT>* LinkList<DT>::setData(uint id, const DT& d){
 	if (empty() && id==1){
 		LinkListNode<DT>* new_node = new LinkListNode < DT > ;
 		new_node->data = d;
@@ -51,29 +51,29 @@ LinkListNode<DT>* LinkList<DT>::setData(uint id, DT& d){
 
 //push
 template<class DT>
-bool LinkList<DT>::push(DT& d)const{
+bool LinkList<DT>::push(const DT& d){
 	if (empty()){
 		LinkListNode<DT>* new_node = new LinkListNode < DT > ;
 		new_node->data = d;
 		head = new_node;
 		++len;
 		return true;
-	}
-	insert_one(len+1, d);
+	}else
+		insert_one(len+1, d);
 	return true;
 }
 
 //push
 template<class DT>
-bool LinkList<DT>::pop(DT& d)const{
+bool LinkList<DT>::pop(DT& d){
 	if (empty())return false;
 	remove_one(len, d);
-	return TRUE;
+	return true;
 }
 
 //insert_one
 template<typename DT>
-LinkListNode<DT>* LinkList<DT>::insert_one(uint id, DT& d){
+LinkListNode<DT>* LinkList<DT>::insert_one(uint id, const DT& d){
 	LinkListNode<DT>* cur = locate(id - 1);
 	LinkListNode<DT>* new_node = new LinkListNode < DT > ;
 	new_node->data = d;
