@@ -17,12 +17,30 @@ public:
 
 	virtual bool push(const DT& d);
 	virtual bool pop(DT& d);
+	virtual void print_data()const;
+
 	virtual LinkListNode<DT>* insert(uint id, const DT& d) = 0;
 	virtual LinkListNode<DT>* remove(uint id, DT& d) = 0;
 	
 protected:
 	uint	len=0;
 };
+
+template<typename DT>
+void	LinkList<DT>::print_data()const{
+	if (nullptr == head)	std::cout << "This list is empty" << std::endl;
+	else{
+		LinkListNode<DT> *cur = head;
+		while (cur != nullptr){
+			std::cout << cur->data << " ";
+			cur = cur->next;
+		}
+		std::cout << std::endl;
+	}
+
+	std::cout << "The length is "<<len <<std::endl;
+}
+
 
 //locate
 template<typename DT>

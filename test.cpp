@@ -3,6 +3,7 @@
 #include "ForwarLinkList.h"
 #include "DequeLink.h"
 #include "StackLink.h"
+#include "DoubleLinkList.h"
 
 using namespace std;
 
@@ -169,6 +170,51 @@ int	main(void){
 	cout << "Length:" << sl.length() << endl;
 
 	cout << sl.getTop()<<endl;
+
+	/*************doubleLinkList******************/
+	DoubleLinkList<int> dll;
+
+	cout << endl;
+	cout << "=========================" << endl;
+	cout << "DoubleLinkList" << endl;
+	if (dll.empty())dll.print_data();	
+
+	for (int i = 1; i <= 10; ++i)
+		dll.push(i + 500);
+	dll.print_data();
+
+	for (int i = 0; i < 3; ++i){
+		dll.pop(d);
+		cout << d << "\t";
+	}
+	cout << endl;
+	dll.print_data();	
+
+	dll.insert(1, 50);
+	dll.print_data();
+	
+	dll.insert(dll.length(), 0);
+	dll.print_data();
+	cout << "Length:" << dll.length() << endl;
+	dll.insert(3, 10);
+	dll.print_data();
+	cout << "Length:" << dll.length() << endl;
+
+
+	dll.remove(1, d);
+	cout << d << endl;
+	dll.print_data();
+	
+	dll.remove(dll.length(), d);
+	cout << d << endl;
+	dll.print_data();
+
+	dll.remove(3, d);
+	cout << d << endl;
+	dll.print_data();
+
+
+
 
 	return EXIT_SUCCESS;
 }
