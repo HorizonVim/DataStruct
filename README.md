@@ -12,6 +12,6 @@ Log<br />
 1.	Write and test DoubleLinkList.h <br />
 2.	Revise the function print_data of the LinkList.h<br />
 
-2071-02-24<br />
+2017-02-24<br />
 1.	Write and test sort.h
 2.	the sort.h has 7 sort algorithm, including: bubble sorting, insert sorting, selection sorting, shell sorting, merger sorting, heap sorting and so on.<br />
