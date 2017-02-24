@@ -10,12 +10,10 @@ int	main(void){
 	//BubbleSort(a, 9);
 	//InserSort(a, 9);
 	//ChooseSort(a, 9);
-	
 	//ShellSort(a, 9);
-	QuickSort(a, 9);
-
+	//QuickSort(a, 9);
 	//MergerSort(a, 9);
-
+	HeapSort(a, 9);
 	print(a, 9);
 
 	return EXIT_SUCCESS;

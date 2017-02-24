@@ -41,17 +41,19 @@ void	BubbleSort(T* data, IndexType len){
 //*********	InsertSort		*****************//
 template<class T>
 void	InserSort(T* data, IndexType start, IndexType end){
-	T t;
-	for (IndexType i = start + 1; i < end;++i){
-		for (IndexType j = i-1; j >= start; --j){
-			if (data[i] < data[j-1])
-				swap(data+j, data+j-1)
-		}
+	print(data, end - start);
+	T d;
+	for (IndexType i = start + 1; i < end; ++i){
+		d = data[i];
+		IndexType j;
+		for (j = i - 1; d<data[j]; --j)
+			data[j + 1] = data[j];
+		data[j + 1] = d;
 	}
 }
 template<class T>
 void	InserSort(T* data, IndexType len){
-	ChooseSort(data, 0, len);
+	InserSort(data, 0, len);
 }
 
 //*********	ChooseSort		*****************//
@@ -71,23 +73,20 @@ void ChooseSort(T* data, IndexType len){
 	ChooseSort(data, 0, len);
 }
 
-
 //*********	ShellSort		*****************//
 template<class T>
-void	ShellSort(T* data, IndexType start, IndexType end){
-	IndexType	incremet = (end - start+1) / 3 + 1;
-	while (incremet>1){
-		for (IndexType i = 0; i < incremet; ++i){
-			for (IndexType j = i + incremet; j < end; j += incremet){
-				for (int m = j - incremet; m >= (int)i; m -= incremet){
-					if (data[j] > data[m]){
-						swap(data + j, data + m);
-					}
-				}
-			}
+void	ShellSort(T* data, IndexType s, IndexType e){
+	IndexType increment = e - s;
+	do{
+		increment = increment / 3 + 1;
+		for (IndexType i = increment; i < e; ++i){
+			T d = data[i];
+			IndexType j;
+			for ( j = i - increment; d < data[j]; j -= increment)
+				data[j + increment] = data[j];
+			data[j + increment] = d;
 		}
-		incremet = incremet / 3 + 1;
-	}	
+	} while (increment>1);
 }
 
 template<class T>
@@ -95,93 +94,85 @@ void ShellSort(T* data, IndexType len){
 	ShellSort(data, 0, len);
 }
 
-
 //*********	QuickSort		*****************//
-template<class T>
-void	QuickSort(T* data, IndexType start, IndexType end){
-	print(data, end - start);
-	if (end - start > 1){
+template<class  T>
+void	QuickSort(T* data, IndexType s, IndexType e){
+	if (e - s > 1){
+		T key = data[s];
+		IndexType pos = s;
+		IndexType high = e - 1;
 		IndexType i;
-		IndexType h = end;
-		T key = data[start];
-
-		for (i = start + 1; i < h; ++i){
-			if (data[i] < key) data[i-1] = data[i];
-			else{
-				swap(data + h - 1, data + i);
-				--h;
+		for ( i = s + 1; i !=high; ++i){
+			if (data[i] < key)pos++;
+			else {
+				swap(data + i, data + high);
+				--high;
 				--i;
-				print(data, end - start);
 			}
 		}
+		if (data[i] < key)swap(data + s, data + i);
+		else swap(data + s, data + i - 1);
+		QuickSort(data, s, pos);
+		QuickSort(data, pos + 1, e);
 	}
 }
+
 template<class T>
 void	QuickSort(T* data, IndexType len){
 	QuickSort(data, 0, len);
 }
 
-
 //*********	MergerSort		*****************//
 template<class T>
-void	MergerSort(T* data, IndexType start, IndexType end){
-	IndexType mid=(start+end)>>1;
-	if (end - start > 1){
-		mid = (start - end) >> 1;
-		MergerSort(data, start, mid);
-		MergerSort(data, mid + 1, end);
-	}
-	else{
-		T* tmp = new T[end - start];
+void	MergerSort(T* data, IndexType s, IndexType e){
+	IndexType mid = (e + s) >> 1;
+	if (e - s>1){
+		MergerSort(data, s, mid);
+		MergerSort(data, mid, e);	
+		T*	d = new T[e - s];
+		IndexType low = s;
+		IndexType m = mid;
 		IndexType i = 0;
-		IndexType low = start;
-		IndexType m = mid + 1;
-		IndexType high = end;
-		while (low <= mid && m<high){
-			if (data[low] > data[m]){
-				tmp[i++] = data[m];
-				++m;
+		while (low < mid&& m < e){
+			if (data[low] < data[m]){
+				d[i] = data[low];
+				++low;				
+			}else	{
+				d[i] = data[m];
+				++m;				
 			}
-			else{
-				tmp[i++] = data[low];
-				++low;
-			}
+			++i;			
 		}
-		if (low < mid)tmp[i++] = data[low++];
-		if (m < high) tmp[i++] = data[m++];
-		for (IndexType i = 0; i < high - start; ++i)
-			data[start + i] = tmp[i];
-		delete[] tmp;
+		while (low < mid)	d[i++] = data[low++];
+		while (m < e)d[i++] = data[m++];
+		
+		for (IndexType i = 0; i < e - s; ++i)
+			data[s + i] = d[i];
+
+		delete[] d;
 	}
 }
+
+
 template<class T>
 void	MergerSort(T* data, IndexType len){
 	MergerSort(data, 0, len);
 }
+
 //*********	HeapSort		*****************//
 template<class T>
-void	heap_adjust(T* data, IndexType start, IndexType end){
-	T tmp=data[start];
-	for (IndexType j = 2 * start; j <= end; j *= 2){
-		if (j < m&& data[j] < data[j + 1])
-			++j;
-		if (tmp >= data[j])
-			break;
-		data[start] = data[j];
-		start = j;
+void	Heap(T* data, IndexType s, IndexType e){
+	for (IndexType i = ((s + e) >> 1)+1; i; --i){
+		if (2 * (i - 1) <e&&data[2 * (i - 1)] > data[i - 1]) swap(data + 2 * (i - 1), data + i - 1);
+		if (2 * (i - 1) + 1 <e&& data[2 * (i - 1) + 1] > data[i - 1]) swap(data + 2 * (i - 1) + 1, data + i - 1);
 	}
-	data[start] = tmp; 
 }
-
 template<class T>
-void	HeapSort(T* data, IndexType start, IndexType end){
-	for (IndexType i = end - start; i > 0; --i)
-		heap_adjust(data, i, end);
-	for (IndexType i = end - start; i > 0; --i){
-		swap(data, i);
-		heap_adjust(data, 0, i - 1);
+void	HeapSort(T* data, IndexType s, IndexType e){
+	for (IndexType i = s; i < e; ++i){
+		Heap(data, s, e-i-1);
+		swap(data+s, data+ e - i - 1);
 	}
-
 }
 template<class T>
 void	HeapSort(T* data, IndexType len){
